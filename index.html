@@ -14,8 +14,19 @@
        names a glyph this list is missing, because a missing glyph does not draw
        a box — the ligature never forms and the element renders the literal word. -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=adjust,arrow_drop_down,arrow_forward,arrow_left,arrow_right,bolt,chevron_left,chevron_right,close,close_fullscreen,dark_mode,draw,east,flare,flight,layers_clear,light_mode,local_fire_department,my_location,navigation,normal,on,open_in_full,public,radar,radio,right_panel_close,right_panel_open,rocket_launch,skip_next,skip_previous,view_in_ar" rel="stylesheet" />
+  <style>
+    #tsiaro-quicklinks{position:fixed;left:12px;bottom:12px;z-index:10000;display:flex;gap:6px;flex-wrap:wrap}
+    #tsiaro-quicklinks a{font:600 11px/1.2 Inter,system-ui,sans-serif;letter-spacing:.08em;color:#e6edf0;text-decoration:none;background:rgba(9,20,27,.94);border:1px solid rgba(105,200,208,.55);border-radius:6px;padding:9px 11px;box-shadow:0 3px 14px #0005}
+    #tsiaro-quicklinks a:hover,#tsiaro-quicklinks a:focus-visible{border-color:#d7b46a;color:#d7b46a;outline:2px solid transparent}
+    @media(max-width:600px){#tsiaro-quicklinks{left:8px;bottom:8px}#tsiaro-quicklinks a{font-size:10px;padding:8px}}
+  </style>
 </head>
 <body>
+  <nav id="tsiaro-quicklinks" aria-label="Tsiaro project navigation">
+    <a href="/atlas.html">TSIARO ATLAS</a>
+    <a href="/simulator.html">ATLAS LAB · SIMULATOR</a>
+  </nav>
+
   <!-- gev:template scene-chrome -->
 
   <!-- gev:template cockpit -->
