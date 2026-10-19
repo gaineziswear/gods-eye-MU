@@ -25,7 +25,7 @@ const pages = [
   {
     file: 'dist/index.html',
     checks: [
-      [/ <title>God.s Eye View<\/title>/i, 'application title'],
+      [/<title>God.s Eye View<\/title>/i, 'application title'],
       [/\/assets\/[^"']+\.js/i, 'compiled Vite JavaScript entry'],
     ],
   },
