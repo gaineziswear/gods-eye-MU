@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>God’s Eye Mauritius — Globe interactif | Tsiaro Atlas</title>
+  <meta name="description" content="Explorez le globe interactif de Tsiaro Atlas et les outils de simulation pour Maurice." />
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=adjust,arrow_drop_down,arrow_forward,arrow_left,arrow_right,bolt,chevron_left,chevron_right,close,close_fullscreen,dark_mode,draw,east,flare,flight,layers_clear,light_mode,local_fire_department,my_location,navigation,normal,on,open_in_full,public,radar,radio,right_panel_close,right_panel_open,rocket_launch,skip_next,skip_previous,view_in_ar" rel="stylesheet" />
+  <style>
+    #tsiaro-quicklinks{position:fixed;left:12px;bottom:12px;z-index:10000;display:flex;gap:6px;flex-wrap:wrap}
+    #tsiaro-quicklinks a{font:600 11px/1.2 Inter,system-ui,sans-serif;letter-spacing:.05em;color:#e6edf0;text-decoration:none;background:rgba(9,20,27,.94);border:1px solid rgba(105,200,208,.55);border-radius:6px;padding:9px 11px;box-shadow:0 3px 14px #0005}
+    #tsiaro-quicklinks a:hover,#tsiaro-quicklinks a:focus-visible{border-color:#d7b46a;color:#d7b46a;outline:2px solid transparent}
+    @media(max-width:600px){#tsiaro-quicklinks{left:8px;bottom:8px}#tsiaro-quicklinks a{font-size:10px;padding:8px}}
+  </style>
+</head>
+<body>
+  <nav id="tsiaro-quicklinks" aria-label="Navigation des services Tsiaro">
+    <a href="https://tsiaro-security.hatchable.site/loeil-mauricien.html">L’ŒIL MAURICIEN · ACTUALITÉS</a>
+    <a href="/simulator.html">SIMULATEUR ATLAS</a>
+  </nav>
+  <!-- gev:template scene-chrome -->
+  <!-- gev:template cockpit -->
+  <!-- gev:template display-controls -->
+  <!-- gev:template command-dock -->
+  <!-- gev:template layer-panels -->
+  <!-- gev:template context -->
+  <!-- gev:template welcome -->
+  <!-- gev:template provider-settings -->
+  <!-- gev:template hud-loading -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
