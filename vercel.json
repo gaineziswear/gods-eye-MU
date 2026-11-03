@@ -1,22 +1,16 @@
 {
-  "rewrites": {
-    "beforeFiles": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://tsiaro-security.hatchable.site/api/:path*"
-      },
-      {
-        "source": "/newsroom-admin.html",
-        "destination": "https://tsiaro-security.hatchable.site/newsroom-admin.html"
-      },
-      {
-        "source": "/loeil-mauricien.html",
-        "destination": "https://tsiaro-security.hatchable.site/loeil-mauricien.html"
-      },
-      {
-        "source": "/",
-        "destination": "https://tsiaro-security.hatchable.site/loeil-mauricien.html"
-      }
-    ]
-  }
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://tsiaro-security.hatchable.site/api/:path*"
+    },
+    {
+      "source": "/newsroom-admin.html",
+      "destination": "https://tsiaro-security.hatchable.site/newsroom-admin.html"
+    },
+    {
+      "source": "/loeil-mauricien.html",
+      "destination": "https://tsiaro-security.hatchable.site/loeil-mauricien.html"
+    }
+  ]
 }
