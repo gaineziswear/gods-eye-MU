@@ -11,6 +11,10 @@
     {
       "source": "/loeil-mauricien.html",
       "destination": "https://tsiaro-security.hatchable.site/loeil-mauricien.html"
+    },
+    {
+      "source": "/bonjour-maurice.html",
+      "destination": "https://tsiaro-security.hatchable.site/bonjour-maurice.html"
     }
   ]
 }
