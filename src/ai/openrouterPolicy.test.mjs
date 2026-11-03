@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   buildEligibleModelRoutes,
   isEligibleZdrEndpoint,
+  isPublicSourceHostname,
   isZeroCostPricing,
   parseFreeModelAllowlist,
   parseStructuredJson,
@@ -15,6 +16,7 @@ import {
 const endpoint = (modelId, providerName, overrides = {}) => ({
   model_id: modelId,
   provider_name: providerName,
+  tag: providerName.toLowerCase().replace(/[^a-z0-9_-]/g, '-'),
   status: 0,
   context_length: 32768,
   max_completion_tokens: 4096,
@@ -65,9 +67,9 @@ test('route selection follows the explicit allowlist and never invents an unappr
 
 test('independent reviewer must use a different model family and provider', () => {
   const routes = [
-    { modelId: 'nvidia/model-a', modelAuthor: 'nvidia', providerName: 'NVIDIA' },
-    { modelId: 'nvidia/model-b', modelAuthor: 'nvidia', providerName: 'NVIDIA-2' },
-    { modelId: 'qwen/model-c', modelAuthor: 'qwen', providerName: 'Alibaba' },
+    { modelId: 'nvidia/model-a', modelAuthor: 'nvidia', providerName: 'NVIDIA', providerTag: 'nvidia' },
+    { modelId: 'nvidia/model-b', modelAuthor: 'nvidia', providerName: 'NVIDIA-2', providerTag: 'nvidia-2' },
+    { modelId: 'qwen/model-c', modelAuthor: 'qwen', providerName: 'Alibaba', providerTag: 'alibaba' },
   ];
   assert.equal(selectIndependentReviewer(routes, routes[0]), routes[2]);
   assert.equal(selectIndependentReviewer(routes.slice(0, 2), routes[0]), null);
@@ -130,4 +132,18 @@ test('source claims without known source references are never treated as provena
 
 test('analysis validation rejects missing bilingual summaries', () => {
   assert.throws(() => validateAnalysis({ summary_fr: 'Résumé uniquement.' }, []), /Both French and English/);
+});
+
+test('source host validation blocks private and reserved IPv4 and IPv6 literals', () => {
+  for (const host of ['127.0.0.1', '10.0.0.1', '172.16.0.1', '192.168.1.1', '169.254.1.1', '100.64.0.1', '224.0.0.1']) {
+    assert.equal(isPublicSourceHostname(host), false, host);
+  }
+  for (const host of ['::1', '::', 'fd00::1', 'fe80::1', 'ff02::1', '2001:db8::1', '[::ffff:192.168.1.1]']) {
+    assert.equal(isPublicSourceHostname(host), false, host);
+  }
+  assert.equal(isPublicSourceHostname('2606:4700:4700::1111'), true);
+  assert.equal(isPublicSourceHostname('8.8.8.8'), true);
+  assert.equal(isPublicSourceHostname('govmu.org'), true);
+  assert.equal(isPublicSourceHostname('localhost'), false);
+  assert.equal(isPublicSourceHostname('service.internal'), false);
 });
