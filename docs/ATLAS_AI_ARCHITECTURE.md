@@ -61,7 +61,7 @@ No model is selected merely because its name contains “free”. At runtime the
 
 The allowlist order is the routine preference order. On retryable availability errors, the router may try one other model from that same allowlist. Authentication errors, payment errors, invalid output, and non-zero usage do not trigger retries. No paid model or paid provider fallback is permitted.
 
-The capabilities endpoint reports current zero-cost ZDR candidates. An operator must inspect the candidates and set the exact approved model IDs in Vercel. A second reviewer is available only when the allowlist contains a healthy model from a different model family and a different provider.
+The capabilities endpoint reports current zero-cost ZDR candidates. This is catalogue eligibility only, not a live inference test; a provider may still rate-limit a free endpoint. A read-only check through the connected OpenRouter credential on 2026-11-03 found one eligible model, xingchen-agi/xing4.0-29b-a4b:free via Phala, but a test completion returned HTTP 429. It is therefore not considered operationally available at that moment. No second independent zero-cost ZDR model was present. An operator must inspect the candidates and set exact approved model IDs in Vercel. A second reviewer is available only when the allowlist contains a healthy model from a different model family and a different provider. With only one current zero-cost ZDR candidate, critical independent review is unavailable and must remain human-controlled.
 
 ## Independent verification policy
 

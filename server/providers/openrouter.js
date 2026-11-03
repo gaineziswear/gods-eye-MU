@@ -144,7 +144,7 @@ async function capabilitySnapshot() {
       status: !allowlist.length
         ? 'model_allowlist_required'
         : approved.length
-          ? reviewer ? 'ready' : 'routine_ready_verification_unavailable'
+          ? reviewer ? 'catalog_ready' : 'catalog_ready_verification_unavailable'
           : 'no_eligible_approved_free_models',
       candidate_models: candidates,
       approved_models: approved.map((route) => ({
@@ -490,6 +490,8 @@ async function handleRun(req, res) {
       models: [primary.route, result.reviewer?.route, result.synthesis?.route]
         .filter(Boolean)
         .map((route) => ({ id: route.modelId, provider: route.providerName })),
+      model_policy: 'absolute_zero',
+      paid_fallback: false,
       cost: {
         usd: 0,
         policy: 'absolute_zero',
@@ -513,6 +515,7 @@ async function handleRun(req, res) {
     }));
     return sendJson(res, status, {
       error: code,
+      model_policy: 'absolute_zero',
       paid_fallback: false,
       external_inference: code !== 'openrouter_not_configured',
     });
