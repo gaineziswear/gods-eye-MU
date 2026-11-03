@@ -2,6 +2,7 @@ export function parseFreeModelAllowlist(value) {
   const seen = new Set();
   return String(value || '').split(',').map((item) => item.trim())
     .filter((item) => /^[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._:-]*$/i.test(item))
+    .filter((item) => !/^openrouter\/(free|auto)$/i.test(item))
     .filter((item) => {
       const key = item.toLowerCase();
       if (seen.has(key)) return false;
@@ -68,6 +69,7 @@ export function validatePublicClassification(classification, content) {
     /\b(?:\+?230[\s-]?)?(?:5\d{7}|[2-4]\d{7})\b/,
     /\b(?:passport number|national identity|national id|identity card|bank account|account number|medical record|patient record)\b/i,
     /\b(?:minor|child|children|rape|sexual assault|suicide|self-harm|murder|homicide|fatality|fatal|death|deceased|injured|injury|diagnosis|medical condition|arrested|suspect|allegation|defamation|national security)\b/i,
+    /\b(?:enfant|mineur|décès|mort|blessé|blessure|agression|viol|suicide|accusation|arrestation|suspect|dossier médical|donnée médicale|maladie|sécurité nationale|zanfan|blese|lanmor|akizasyon|arrestasyon)\b/i,
   ];
   if (patterns.some((pattern) => pattern.test(value))) return { allowed: false, reason: 'sensitive_or_personal_content_detected' };
   return { allowed: true, reason: null };
@@ -99,12 +101,13 @@ export function validateAnalysis(value, sourceIds) {
     const sourceRefs = suppliedIds.filter((id) => known.has(id));
     for (const id of suppliedIds) if (!known.has(id)) invalidSourceIds.add(id);
     let evidenceStatus = ['supported', 'unverified', 'conflicting'].includes(fact && fact.evidence_status) ? fact.evidence_status : 'unverified';
-    if (evidenceStatus === 'supported' && sourceRefs.length === 0) {
-      evidenceStatus = 'unverified';
+    if (sourceRefs.length === 0) {
+      if (evidenceStatus === 'supported') evidenceStatus = 'unverified';
       unreferencedSupportedClaim = true;
     }
     return { claim, source_ids: sourceRefs, evidence_status: evidenceStatus };
   }).filter((fact) => fact.claim);
+  if (facts.length === 0) throw new Error('At least one source-linked fact is required.');
   const confidence = ['low', 'medium', 'high'].includes(value.confidence) ? value.confidence : 'low';
   return {
     summary_fr: summaryFr, summary_en: summaryEn, facts,

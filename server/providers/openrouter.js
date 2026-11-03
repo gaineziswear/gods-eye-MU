@@ -49,8 +49,7 @@ function sendJson(res, status, payload) {
 }
 
 function getIp(req) {
-  return String(req.headers?.['x-real-ip'] || req.socket?.remoteAddress
-    || req.headers?.['x-forwarded-for'] || 'unknown').split(',')[0].trim().slice(0, 80);
+  return String(req.headers?.['x-forwarded-for'] || req.headers?.['x-real-ip'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim().slice(0, 80);
 }
 
 function withinRateLimit(req) {
@@ -310,12 +309,14 @@ async function callModel(route, system, payload) {
   }
   const costValue = data?.usage?.cost;
   const cost = costValue === undefined || costValue === null ? null : Number(costValue);
-  if (cost !== null && (!Number.isFinite(cost) || cost > 0)) {
+  if (cost !== null && (!Number.isFinite(cost) || cost !== 0)) {
     throw new ProviderError('nonzero_usage_cost_detected', 502, false);
   }
   const parsed = parseStructuredJson(choice.message?.content);
   const sourceIds = Array.isArray(payload.sources) ? payload.sources.map((source) => source.id) : [];
   const analysis = validateAnalysis(parsed, sourceIds);
+  const outputPolicy = validatePublicClassification('public', JSON.stringify(analysis));
+  if (!outputPolicy.allowed) throw new ProviderError('model_output_sensitive_or_personal_content', 502, false);
   return {
     route,
     analysis,
@@ -462,8 +463,13 @@ async function handleRun(req, res) {
     }
     const provenanceValid = analysis.source_provenance_valid
       && (!result.reviewer || result.reviewer.analysis.source_provenance_valid);
-    const disagreements = analysis.disagreements || [];
-    const humanReviewRequired = critical || !provenanceValid || disagreements.length > 0;
+    const disagreements = [
+      ...(analysis.disagreements || []),
+      ...(result.reviewer?.analysis.disagreements || []),
+    ];
+    const humanReviewRequired = critical || !provenanceValid || disagreements.length > 0
+      || analysis.confidence === 'low' || (analysis.risk_flags || []).length > 0
+      || (analysis.unresolved_questions || []).length > 0;
     const totalLatencyMs = Date.now() - started;
     logCompletion(requestId, task, result, verificationStatus, totalLatencyMs);
     return sendJson(res, 200, {

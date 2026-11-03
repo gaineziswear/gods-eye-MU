@@ -26,7 +26,7 @@ const endpoint = (modelId, providerName, overrides = {}) => ({
 
 test('model allowlist accepts exact model IDs only and removes duplicates', () => {
   assert.deepEqual(
-    parseFreeModelAllowlist('nvidia/nemotron-free, openai/gpt-4, nvidia/nemotron-free, openrouter/free, https://bad'),
+    parseFreeModelAllowlist('nvidia/nemotron-free, openai/gpt-4, nvidia/nemotron-free, openrouter/free, openrouter/auto, https://bad'),
     ['nvidia/nemotron-free', 'openai/gpt-4'],
   );
 });
@@ -87,6 +87,7 @@ test('external inference accepts public material only and blocks obvious PII or 
   assert.equal(validatePublicClassification('sensitive', 'Private report').allowed, false);
   assert.equal(validatePublicClassification('public', 'Contact patrick@example.com').allowed, false);
   assert.equal(validatePublicClassification('public', 'A child was injured in an incident').allowed, false);
+  assert.equal(validatePublicClassification('public', 'Un enfant a été blessé').allowed, false);
 });
 
 test('structured output validation preserves known source IDs and flags invented IDs', () => {
@@ -115,6 +116,15 @@ test('supported claims without a supplied source reference are downgraded and fl
     facts: [{ claim: 'An unsupported claim.', source_ids: [], evidence_status: 'supported' }],
   }, []);
   assert.equal(result.facts[0].evidence_status, 'unverified');
+  assert.equal(result.source_provenance_valid, false);
+});
+
+test('source claims without known source references are never treated as provenance-valid', () => {
+  const result = validateAnalysis({
+    summary_fr: 'Résumé sans référence.',
+    summary_en: 'Summary without a reference.',
+    facts: [{ claim: 'An unreferenced claim.', source_ids: [], evidence_status: 'unverified' }],
+  }, []);
   assert.equal(result.source_provenance_valid, false);
 });
 
