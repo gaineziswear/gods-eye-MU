@@ -526,9 +526,9 @@ function handler(req, res, next) {
   const pathname = new URL(req.url || '/', 'https://atlas.invalid').pathname;
   if (pathname === '/capabilities' || pathname === '/capabilities/') {
     if (req.method !== 'GET') return sendJson(res, 405, { error: 'method_not_allowed' });
-    return void handleCapabilities(req, res);
+    return handleCapabilities(req, res);
   }
-  if (pathname === '/run' || pathname === '/run/') return void handleRun(req, res);
+  if (pathname === '/run' || pathname === '/run/') return handleRun(req, res);
   return next();
 }
 
