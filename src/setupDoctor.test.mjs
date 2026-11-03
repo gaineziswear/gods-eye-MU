@@ -211,6 +211,7 @@ test('doctor describes the credential ladder without exposing values', () => {
   const credentials = {
     GOOGLE_MAPS_API_KEY: { configured: false },
     GOOGLE_MAPS_SERVER_API_KEY: { configured: false },
+    OPENROUTER_API_KEY: { configured: false },
     CESIUM_ION_TOKEN: { configured: true, source: 'environment' },
     OPENAI_API_KEY: { configured: true, source: 'dotenv files' },
     AISSTREAM_API_KEY: { configured: false },
