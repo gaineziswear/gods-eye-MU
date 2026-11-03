@@ -4,6 +4,7 @@ import { readResponseJsonCapped } from './common/http.js';
 import {
   buildEligibleModelRoutes,
   isEligibleZdrEndpoint,
+  isPublicSourceHostname,
   parseFreeModelAllowlist,
   parseStructuredJson,
   requiresIndependentReview,
@@ -194,8 +195,7 @@ function sanitizeSources(value) {
       throw new ProviderError('invalid_or_duplicate_source_id', 400, false);
     }
     if (url.protocol !== 'https:' || url.username || url.password
-      || /^(localhost|.*\.local)$/i.test(url.hostname)
-      || /^(127\.|10\.|192\.168\.|169\.254\.)/.test(url.hostname)) {
+      || !isPublicSourceHostname(url.hostname)) {
       throw new ProviderError('source_url_must_be_public_https', 400, false);
     }
     for (const key of url.searchParams.keys()) {
