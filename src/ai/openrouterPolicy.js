@@ -1,7 +1,8 @@
 import { isIP } from 'node:net';
 export function isPublicSourceHostname(hostname) {
-  const host = String(hostname || '').toLowerCase().replace(/^\\[|\\]$/g, '');
-  if (!host || /^(localhost|.*\\.(local|localhost|internal|test|invalid|example))$/i.test(host)) return false;
+  const host = String(hostname || '').toLowerCase().replaceAll('[', '').replaceAll(']', '');
+  const nonPublicSuffixes = ['localhost', 'local', 'internal', 'test', 'invalid', 'example'];
+  if (!host || nonPublicSuffixes.some((suffix) => host === suffix || host.endsWith('.' + suffix))) return false;
   const version = isIP(host);
   if (version === 4) {
     const octets = host.split('.').map(Number);
@@ -12,17 +13,15 @@ export function isPublicSourceHostname(hostname) {
     if (a === 169 && b === 254) return false;
     if (a === 172 && b >= 16 && b <= 31) return false;
     if (a === 192 && (b === 0 || b === 168)) return false;
-    if (a === 192 && b === 0 && c === 2) return false;
     if (a === 198 && (b === 18 || b === 19 || (b === 51 && c === 100))) return false;
     if (a === 203 && b === 0 && c === 113) return false;
     return true;
   }
   if (version === 6) {
-    // Only global-unicast 2000::/3 literals are accepted. This excludes
-    // loopback, unspecified, ULA, link-local, multicast, mapped and scoped forms.
+    // Accept only global-unicast 2000::/3; reject special-use transition/documentation ranges.
     if (!/^[23][0-9a-f]{0,3}:/i.test(host)) return false;
-    if (/^2001:(?:0?db8|0{0,3}0?0?10):/i.test(host)) return false;
-    if (/^2002:/i.test(host) || /^2001:0{0,3}0?:/i.test(host)) return false;
+    if (host.startsWith('2001:db8:') || host.startsWith('2001:10:') || host.startsWith('2001:20:')
+      || host.startsWith('2002:') || host.startsWith('2001:0:')) return false;
     return true;
   }
   return version === 0;
