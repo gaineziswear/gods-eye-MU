@@ -1,20 +1,36 @@
 # Tsiaro integration notes for God's Eye MU
 
+## Audit addendum (2026-11-03)
+
+This addendum supersedes the stale deployment and PR assumptions in the historical 2026-10-16 notes below.
+
+- Repository main branch is at commit b9eb80bde3917a7a87f9cbcb6344cd8e6a5a7222.
+- PR #1 has been merged. The Vercel project is linked to this repository and reports a READY production deployment.
+- The production API adapter exists at api/[...path].js. It registers the existing Connect/Vite provider handlers inside a Vercel Node serverless function. The earlier concern about Vite configureServer hooks not running in static hosting is addressed by this adapter; individual feeds still require route-specific smoke tests.
+- Vercel project SSO protection is enabled. The current project uses Vercel deployment URLs; do not weaken SSO to make an embed or API test work.
+- OPENAI_API_KEY is present in the Vercel environment. This proves credential presence only, not a successful Realtime session or microphone operation.
+- The Hatchable OpenRouter connection is separate from Vercel. No OPENROUTER_API_KEY is present in this Vercel project's environment inventory. Do not expose or transfer the Hatchable secret through chat.
+- Metricool-related environment entries exist in Vercel, but this repository contains no Metricool implementation. The separate Hatchable newsroom publishing workflow is not changed by Atlas work.
+- No Atlas Supabase configuration or database project was found in the repository or connected Supabase project inventory. Do not use the GEPETO database or create a replacement project without explicit approval.
+- The new Atlas AI route is analysis-only. It requires an explicit model allowlist and live zero-cost ZDR endpoint verification; no inference is enabled until the Vercel OpenRouter secret is configured.
+- Empire LLM for Codex is a proprietary development-time plugin. It is not a runtime dependency. Its local operating-system credential store is separate from Hatchable and Vercel.
+- Production promotion remains subject to CI, Vercel preview verification, and explicit human approval.
+
 ## Goal
 Build and run the actual God's Eye application from this repository, then integrate that running application into Tsiaro Security Fabric. Do not replace it with a decorative globe or a link-only integration.
 
-## Current verified status (2026-10-16)
+## Historical verified status (2026-10-16; superseded by the audit addendum above)
 - GitHub source repository: https://github.com/gaineziswear/gods-eye-MU
 - The application is Vite/Cesium. Provider APIs are implemented as Vite middleware plugins in `server/providers/local.js`, attached through `server/standalone/vite.config.js`.
-- Important deployment diagnosis: those provider plugins use Vite `configureServer` / `configurePreviewServer` hooks. A static Vite build served by Vercel does not automatically run the development middleware as production API endpoints. If the current Vercel project is deploying only static build output, live API-backed layers can fail even while the HTML deployment reports READY. This is the leading architecture issue to verify and address with explicit production serverless/API routes or a supported Node server deployment.
+- Historical deployment concern: Vite configureServer hooks do not run in a static build. The current production adapter api/[...path].js now registers the provider handlers in a Vercel Node function; each feed still needs an independent runtime smoke test.
 - `package.json` specifies Node `>=24.14.0 <25 || >=26 <27`; the project setup doctor identifies optional credentials for Cesium, Google Maps, OpenAI voice, AISStream vessels, NASA FIRMS, TomTom, and OpenSky.
-- Integration foundation PR: https://github.com/gaineziswear/gods-eye-MU/pull/1 (draft, open, not merged).
+- Integration foundation PR #1: https://github.com/gaineziswear/gods-eye-MU/pull/1 (merged into main).
 - Vercel project `gods-eye-mu` is linked to this repository. Vercel reports a production deployment in READY state at https://gods-eye-mu-puce.vercel.app/.
 - The Vercel project has SSO protection enabled. A successful HTML response and READY deployment do not prove that provider APIs or feeds work for intended users.
 - Satellite imagery should have a keyless Esri fallback according to the setup doctor, while higher-fidelity map/terrain providers may require Cesium ion and/or Google credentials. Confirm the actual runtime startup route and network requests.
-- Voice control is explicitly reported by the setup doctor as off until `OPENAI_API_KEY` is configured. Never put this key in browser code; use a protected server-side endpoint.
+- Vercel currently has OPENAI_API_KEY configured. Credential presence does not prove a successful Realtime session; never put this key in browser code.
 - Satellite, aircraft, ship, camera and other layers must each be tested independently; don't treat a missing optional feed as proof that the entire globe is broken.
-- CI verification for the PR branch was incomplete at last check. Re-run the existing workflow and unit tests after code changes.
+- CI verification was incomplete at the historical check date. Use the current PR workflow and release gates for all new changes.
 
 ## Required production repair sequence
 1. Reproduce the user's failure on the protected Vercel deployment using an authorised account. Record browser console errors, failed request URLs/statuses and deployment runtime logs; redact tokens.

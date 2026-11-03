@@ -19,6 +19,7 @@ export default function handler(_req, res) {
       weather: { status: 'public-source-available', source: 'NOAA endpoints have region-specific coverage; confirm coverage before interpreting as Mauritius local weather' },
       traffic: { status: has('TOMTOM_API_KEY') ? 'configured' : 'not-configured', credentials: ['TOMTOM_API_KEY'] },
       voice: { status: has('OPENAI_API_KEY') ? 'credential-present' : 'not-configured', credentials: ['OPENAI_API_KEY'], note: 'Microphone permission and a successful realtime session are also required.' },
+      openRouterInference: { status: !has('OPENROUTER_API_KEY') ? 'not-configured' : has('ATLAS_OPENROUTER_FREE_MODELS') ? 'configured-needs-live-zero-cost-zdr-check' : 'model-allowlist-required', credentials: ['OPENROUTER_API_KEY'], freeOnly: true, paidFallback: false, note: 'Server-side public-data analysis only; live model eligibility is checked by /api/atlas/ai/capabilities.' },
       mauritiusOfficialFeeds: { status: 'not-integrated', note: 'No official Mauritius government/reservoir feed has been validated in this build.' }
     },
     privacy: {

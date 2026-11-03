@@ -7,7 +7,8 @@
  * This intentionally omits developer-local endpoints and persistent streams:
  * key setup writes a local .env file, local receivers are machine-local, and
  * AISStream requires a durable websocket worker rather than a short-lived
- * serverless invocation.
+ * serverless invocation. Atlas AI analysis uses a separate free-only OpenRouter
+ * route and never becomes a dependency of the OpenAI Realtime voice path.
  */
 import { localProviderPlugins } from '../server/providers/local.js';
 
@@ -52,6 +53,11 @@ function configuredCapabilities() {
     baseImagery: 'client-side Esri/OSM fallback; requires WebGL in the browser',
     aircraftCredentials: Boolean(process.env.OPENSKY_CLIENT_ID && process.env.OPENSKY_CLIENT_SECRET),
     voice: Boolean(process.env.OPENAI_API_KEY),
+    atlasAi: {
+      openRouterKeyPresent: Boolean(process.env.OPENROUTER_API_KEY),
+      approvedFreeModelAllowlistPresent: Boolean(process.env.ATLAS_OPENROUTER_FREE_MODELS),
+      paidFallback: false,
+    },
     googlePhotorealistic: Boolean(process.env.GOOGLE_MAPS_API_KEY || process.env.CESIUM_ION_TOKEN),
     liveVessels: 'requires a durable AISStream worker; not provided by this serverless adapter',
     nasaFirms: Boolean(process.env.FIRMS_MAP_KEY),

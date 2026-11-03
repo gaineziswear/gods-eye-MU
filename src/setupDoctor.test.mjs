@@ -257,6 +257,7 @@ test('doctor sends Keychain-backed reports to dev-fresh and describes OpenSky as
     'GOOGLE_MAPS_SERVER_API_KEY',
     'CESIUM_ION_TOKEN',
     'OPENAI_API_KEY',
+    'OPENROUTER_API_KEY',
     'AISSTREAM_API_KEY',
     'FIRMS_MAP_KEY',
     'TOMTOM_API_KEY',
@@ -289,6 +290,7 @@ test('doctor never calls a dependency-missing setup ready', () => {
     'GOOGLE_MAPS_SERVER_API_KEY',
     'CESIUM_ION_TOKEN',
     'OPENAI_API_KEY',
+    'OPENROUTER_API_KEY',
     'AISSTREAM_API_KEY',
     'FIRMS_MAP_KEY',
     'TOMTOM_API_KEY',
@@ -307,4 +309,13 @@ test('doctor never calls a dependency-missing setup ready', () => {
   assert.match(output, /dependencies missing; run npm install/);
   assert.match(output, /Setup needs attention/);
   assert.doesNotMatch(output, /Ready\. Run/);
+});
+
+
+test('OpenRouter inference credential is server-side and separate from Empire keychain storage', () => {
+  assert.deepEqual(credential('OPENROUTER_API_KEY').keychain, []);
+  const capabilities = buildCapabilitySummary({
+    OPENROUTER_API_KEY: { configured: true, source: 'environment' },
+  });
+  assert.match(capabilities.aiInference, /exact free-model allowlist/);
 });

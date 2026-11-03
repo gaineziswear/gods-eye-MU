@@ -38,3 +38,21 @@ Updated: 2026-10-16
 - Weather products with North American-only coverage must not be presented as Mauritius observations.
 - Reservoir, cyclone, coastal, telecom/power and emergency modules remain “not connected” until a real, permitted data source is validated.
 - Use only public or explicitly authorised camera metadata and feeds. Do not expose restricted camera coordinates or credentials.
+
+
+## Atlas AI release checks (added 2026-11-03)
+
+Before any production promotion, verify:
+
+1. GET /api/atlas/ai/capabilities returns no secrets and reports the actual OpenRouter configuration state.
+2. The candidate list comes from OpenRouter's ZDR endpoint catalogue; each eligible endpoint has exact zero pricing in every returned pricing field, a healthy status, and structured-output support.
+3. The approved model allowlist contains only exact reviewed model IDs. The first is the routine preference; critical tasks have a second model from a different model family and provider.
+4. Inference requests pin the selected provider, require ZDR, deny provider data collection, set a zero prompt/completion max_price, and disable provider fallbacks.
+5. A model outage can only fall back to another exact allowlisted zero-cost model. No paid route is ever selected.
+6. Public classification is required. Internal/sensitive classification and obvious PII/sensitive-topic patterns are blocked before external inference.
+7. Routine tasks use one model. Critical tasks request a distinct independent model review; if unavailable, the response says so and requires human review.
+8. The endpoint never publishes, dispatches, writes to a database, or marks facts verified.
+9. Vercel SSO remains enabled. Do not create an unauthenticated public inference endpoint.
+10. Existing OpenAI Realtime, map/data feeds, and other provider routes continue to work.
+
+The Atlas route currently has no durable audit database and no in-app RBAC layer. Runtime logs contain metadata only. Do not add write or publication actions until a separate authorization and durable-audit design is approved.
