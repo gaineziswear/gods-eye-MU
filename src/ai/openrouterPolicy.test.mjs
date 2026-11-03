@@ -42,6 +42,7 @@ test('zero-price qualification checks every published price field', () => {
 test('an eligible route must be ZDR-listed, healthy, structured and zero-priced', () => {
   const allowlist = ['nvidia/nemotron-free'];
   assert.equal(isEligibleZdrEndpoint(endpoint(allowlist[0], 'NVIDIA'), allowlist), true);
+  assert.equal(isEligibleZdrEndpoint(endpoint(allowlist[0], 'NVIDIA', { tag: undefined }), allowlist), false);
   assert.equal(isEligibleZdrEndpoint(endpoint(allowlist[0], 'NVIDIA', { status: 1 }), allowlist), false);
   assert.equal(isEligibleZdrEndpoint(endpoint(allowlist[0], 'NVIDIA', {
     supported_parameters: ['temperature', 'response_format'],

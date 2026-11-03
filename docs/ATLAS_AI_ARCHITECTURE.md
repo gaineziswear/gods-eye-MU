@@ -54,7 +54,7 @@ No model is selected merely because its name contains “free”. At runtime the
 2. Requires each allowlisted model to have a healthy ZDR endpoint.
 3. Requires prompt and completion pricing, plus every other returned pricing field, to be exactly zero.
 4. Requires JSON response-format and max-token support.
-5. Pins the provider by name.
+5. Pins the provider by its API slug (the ZDR catalogue tag).
 6. Sets provider.zdr=true and provider.data_collection=deny.
 7. Sets provider.allow_fallbacks=false and provider.max_price prompt/completion to zero.
 8. Rejects a served model identity mismatch or any non-zero usage cost.

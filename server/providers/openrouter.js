@@ -286,8 +286,8 @@ async function callModel(route, system, payload) {
       max_tokens: 1600,
       response_format: { type: 'json_object' },
       provider: {
-        only: [route.providerName],
-        order: [route.providerName],
+        only: [route.providerTag],
+        order: [route.providerTag],
         allow_fallbacks: false,
         max_price: { prompt: 0, completion: 0 },
         zdr: true,

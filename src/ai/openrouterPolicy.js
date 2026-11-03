@@ -23,6 +23,7 @@ export function isZeroCostPricing(pricing) {
 export function isEligibleZdrEndpoint(endpoint, allowlist) {
   return Boolean(endpoint && allowlist.includes(endpoint.model_id)
     && typeof endpoint.provider_name === 'string' && endpoint.provider_name.trim()
+    && typeof endpoint.tag === 'string' && endpoint.tag.trim()
     && endpoint.status === 0 && Number(endpoint.context_length) >= 2048
     && Array.isArray(endpoint.supported_parameters)
     && endpoint.supported_parameters.includes('response_format')
@@ -38,7 +39,7 @@ export function buildEligibleModelRoutes(endpoints, allowlist) {
         || String(a.provider_name).localeCompare(String(b.provider_name)));
     const endpoint = candidates[0];
     if (endpoint) routes.push({
-      modelId, providerName: endpoint.provider_name,
+      modelId, providerName: endpoint.provider_name, providerTag: endpoint.tag,
       contextLength: Number(endpoint.context_length),
       maxCompletionTokens: Number(endpoint.max_completion_tokens || 0),
       pricing: endpoint.pricing,
@@ -53,7 +54,7 @@ export function selectIndependentReviewer(routes, primary) {
   return (Array.isArray(routes) ? routes : []).find((candidate) =>
     candidate.modelId !== primary.modelId
     && candidate.modelAuthor !== primary.modelAuthor
-    && candidate.providerName !== primary.providerName
+    && candidate.providerTag !== primary.providerTag
   ) || null;
 }
 export function requiresIndependentReview(task, critical = false) {
