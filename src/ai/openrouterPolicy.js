@@ -1,9 +1,11 @@
-import { isIP } from 'node:net';
 export function isPublicSourceHostname(hostname) {
   const host = String(hostname || '').toLowerCase().replaceAll('[', '').replaceAll(']', '');
   const nonPublicSuffixes = ['localhost', 'local', 'internal', 'test', 'invalid', 'example'];
   if (!host || nonPublicSuffixes.some((suffix) => host === suffix || host.endsWith('.' + suffix))) return false;
-  const version = isIP(host);
+  const ipv4Literal = /^[0-9.]+$/.test(host);
+  const ipv6Literal = host.includes(':');
+  const version = ipv6Literal ? 6 : ipv4Literal ? 4 : 0;
+  if (ipv4Literal && !/^\\d{1,3}(?:\\.\\d{1,3}){3}$/.test(host)) return false;
   if (version === 4) {
     const octets = host.split('.').map(Number);
     const [a, b, c] = octets;
