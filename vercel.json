@@ -1,6 +1,16 @@
 {
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "midterms2026.vitalos.space"
+        }
+      ],
+      "destination": "/midterms2026.html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://tsiaro-security.hatchable.site/api/:path*"
     },
