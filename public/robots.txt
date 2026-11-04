@@ -5,23 +5,37 @@ Disallow: /api/
 
 User-agent: GPTBot
 Allow: /
+Disallow: /newsroom-admin.html
+Disallow: /api/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /newsroom-admin.html
+Disallow: /api/
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /newsroom-admin.html
+Disallow: /api/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /newsroom-admin.html
+Disallow: /api/
 
 User-agent: Claude-SearchBot
 Allow: /
+Disallow: /newsroom-admin.html
+Disallow: /api/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /newsroom-admin.html
+Disallow: /api/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /newsroom-admin.html
+Disallow: /api/
 
 Sitemap: https://www.vitalos.space/sitemap.xml
