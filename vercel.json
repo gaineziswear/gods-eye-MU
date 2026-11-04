@@ -1,4 +1,17 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^midterms2026\\.vitalos\\.space$"
+        }
+      ],
+      "destination": "/midterms2026.html",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
